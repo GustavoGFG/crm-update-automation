@@ -2,12 +2,12 @@ name: Run Python Script Daily
 
 on:
   schedule:
-    # Roda o script todo dia às 01:00
+    # Roda o script todo dia a cada 5 minutos
     - cron: "*/5 * * * *"
 
 jobs:
   run_script:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest # Necessário para rodar xlwings com suporte ao Excel
 
     steps:
       - name: Check out the repository
@@ -20,8 +20,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser  # Instala o Google Chrome
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
