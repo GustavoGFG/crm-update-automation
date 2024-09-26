@@ -3,7 +3,7 @@ name: Run Python Script Daily
 on:
   schedule:
     # Roda o script todo dia às 01:00
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
 
 jobs:
   run_script:

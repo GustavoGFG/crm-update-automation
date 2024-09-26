@@ -1,5 +1,6 @@
 # web_scraper.py
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
@@ -10,7 +11,13 @@ from datetime import datetime
 from config import catacliente_email, catacliente_password
 
 def login_catacliente():
-    driver = webdriver.Chrome()  # Você pode configurar seu próprio WebDriver
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")  # Roda o Chrome sem interface gráfica
+    chrome_options.add_argument("--no-sandbox")  # Necessário para rodar no GitHub Actions
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Evitar problemas de memória compartilhada
+
+    driver = webdriver.Chrome(options=chrome_options)  # Passa as opções headless para o driver
+
     wait = WebDriverWait(
         driver,
         30,
