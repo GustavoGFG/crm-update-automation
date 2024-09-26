@@ -120,7 +120,9 @@ def get_invited_leads():
         print(f'nome: {lead["name"]} | empresa: {lead["company"]} | campanha: {lead["campaign"]} | perfil: {lead["linkedin"]} | inicio: {lead["data_invite"]}')
 
         leads.append(lead)
+        return leads
 
+        break
         fechar = input("Fechar programa? ")
         print(len(leads))
         if fechar == 's':

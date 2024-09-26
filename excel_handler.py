@@ -37,11 +37,6 @@ def add_leads_excel(file_path, leads):
             sheet.range(f'I{next_row}').value = data_row["linkedin"]
             sheet.range(f'J{next_row}').value = data_row["status"]
 
-            break
-            # break_for = input("Continuar o programa (s/n)? ")
-            # if break_for == 's':
-            #     break
-
             # Atualiza o ID e a última linha
             last_id += 1
             last_row += 1
