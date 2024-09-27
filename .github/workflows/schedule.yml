@@ -1,6 +1,5 @@
-# name: Run Python Script Daily
+name: Run Python Script Daily
 
-<<<<<<< HEAD
 on:
   schedule:
     # Roda o script todo dia a cada 5 minutos
