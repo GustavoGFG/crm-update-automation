@@ -1,52 +1,44 @@
 from config import excel_password
-import xlwings as xw
+import openpyxl
 
 def add_leads_excel(file_path, leads):
+    # Carrega o arquivo Excel
+    wb = openpyxl.load_workbook(file_path, keep_links=False)
     
-    # Abre o arquivo Excel
-    wb = xw.Book(file_path)
-    
-    try:
-        # Seleciona a planilha 'Leads'
-        sheet = wb.sheets['Leads']
-        
-        # Desbloqueia a planilha
-        sheet.api.Unprotect(Password=excel_password)
+    # Seleciona a planilha 'Plan1'
+    sheet = wb['Plan1']
 
-        # Seleciona a tabela pelo nome
-        table_range = sheet.tables["TLeads"].range
+    # Desprotege a planilha se necessário
+    if sheet.protection.sheet:
+         sheet.protection.set_password(excel_password)
+         sheet.protection.sheet = False
 
-        # Encontra a última linha da tabela
-        last_row = table_range.last_cell.row
-        last_id = sheet.range(f'B{last_row}').value
+    # Procura a primeira linha vazia a partir da linha 2
+    start_row = 2
+    first_empty_row = None
 
-        # Define uma macro
-        add_row = wb.macro("AddRow_Leads")
+    for row in range(start_row, sheet.max_row + 2):  # +2 para incluir uma linha a mais caso a última esteja vazia
+        if all(sheet.cell(row=row, column=col).value is None for col in range(1, 7)):  # Verifica se todas as colunas da linha estão vazias
+            first_empty_row = row
+            break
 
-        for data_row in leads:
-            # Insere uma nova linha ao final da tabela
-            add_row()
-            next_row = last_row + 1
-
-            # Preenche as colunas com os valores do dicionário
-            sheet.range(f'B{next_row}').value = last_id + 1
-            sheet.range(f'C{next_row}').value = data_row["name"]
-            sheet.range(f'D{next_row}').value = data_row["company"]
-            sheet.range(f'E{next_row}').value = data_row["campaign"]
-            sheet.range(f'H{next_row}').value = data_row["data_invite"]
-            sheet.range(f'I{next_row}').value = data_row["linkedin"]
-            sheet.range(f'J{next_row}').value = data_row["status"]
-
-            # Atualiza o ID e a última linha
-            last_id += 1
-            last_row += 1
-
-        # Protege novamente a planilha
-        sheet.api.Protect(Password=excel_password)
-        
-        # Salva as alterações
-        wb.save()
-
-    finally:
-        # Fecha o arquivo
+    if first_empty_row is None:
+        print("Não há linhas vazias disponíveis.")
         wb.close()
+        return
+
+    # Insere os dados a partir da primeira linha vazia encontrada
+    for data_row in leads:
+        # Preenche as colunas com os valores do dicionário
+        sheet.cell(row=first_empty_row, column=1, value=data_row["name"])  # Coluna A
+        sheet.cell(row=first_empty_row, column=2, value=data_row["company"])  # Coluna B
+        sheet.cell(row=first_empty_row, column=3, value=data_row["campaign"])  # Coluna C
+        sheet.cell(row=first_empty_row, column=4, value=data_row["data_invite"])  # Coluna D
+        sheet.cell(row=first_empty_row, column=5, value=data_row["linkedin"])  # Coluna E
+        sheet.cell(row=first_empty_row, column=6, value=data_row["status"])  # Coluna F
+        
+        first_empty_row += 1  # Move para a próxima linha vazia
+
+    # Salva as alterações
+    wb.save(file_path)
+    wb.close()

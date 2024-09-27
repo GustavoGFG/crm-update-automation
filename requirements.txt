@@ -1,5 +1,5 @@
 msal
 requests
-xlwings
+openpyxl
 selenium
 python-dotenv

@@ -7,7 +7,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import *
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
+import pytz
 from config import catacliente_email, catacliente_password
 
 def login_catacliente():
@@ -16,7 +17,8 @@ def login_catacliente():
     chrome_options.add_argument("--no-sandbox")  # Necessário para rodar no GitHub Actions
     chrome_options.add_argument("--disable-dev-shm-usage")  # Evitar problemas de memória compartilhada
 
-    driver = webdriver.Chrome(options=chrome_options)  # Passa as opções headless para o driver
+    # driver = webdriver.Chrome(options=chrome_options)  # Passa as opções headless para o driver
+    driver = webdriver.Chrome()  # Passa as opções headless para o driver
 
     wait = WebDriverWait(
         driver,
@@ -86,17 +88,41 @@ def check_campaign(driver, wait):
                     print('Nenhuma campanha nova')
                     break
 
+def scroll_to_element(driver, element):
+    driver.execute_script("arguments[0].scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });", element)
+    print('scrolled')
+
+def order_by_date(driver, wait, el_inner_text, el_class):
+    el = wait.until(EC.presence_of_element_located((By.XPATH, f'//th[contains(text(),"{el_inner_text}")]')))
+    
+    while el_class not in el.get_attribute('class'):
+        scroll_to_element(driver, el)
+        el = wait.until(EC.element_to_be_clickable((By.XPATH, f'//th[contains(text(),"{el_inner_text}")]')))
+        el.click()
+        time.sleep(3)
+
 # def get_invited_leads(driver, wait):
 def get_invited_leads():
+    # Brazil timezone (e.g., America/Sao_Paulo)
+    brazil_tz = pytz.timezone('America/Sao_Paulo')
+
+    # Yesterday date in Brazil timezone (without time)
+    current_date_brazil = (datetime.now(brazil_tz) - timedelta(days=1)).date()
+
     [driver, wait] = login_catacliente()
     close_modal(driver, wait)
 
     driver.get("https://app.catacliente.com.br/index#contatos?t=1")
     time.sleep(5)
 
+
+    # order_by_date(driver, wait, 'Data da sincronização do aceite', 'sorting_desc')
+    order_by_date(driver, wait, 'Data do convite', 'sorting_desc')
+
     # table = wait.until(EC.presence_of_element_located((By.ID, "example")))
     tbody = wait.until(EC.presence_of_element_located((By.TAG_NAME, "tbody")))
     rows = wait.until(lambda driver: tbody.find_elements(By.TAG_NAME, "tr"))
+
 
     leads = []
 
@@ -111,23 +137,24 @@ def get_invited_leads():
         }
         
         cells = row.find_elements(By.TAG_NAME, "td")
+        lead["data_invite"] =  datetime.strptime(cells[7].text, "%d/%m/%Y %H:%M:%S").date()
+        
+        print(current_date_brazil)
+        print(lead["data_invite"])
+        if lead["data_invite"] != current_date_brazil:
+            return leads
+            
+
         lead["name"] = cells[1].text
         lead["company"] = cells[4].text
         lead["linkedin"] = "https://www.linkedin.com/in/" + cells[2].text
         lead["data_invite"] = cells[7].text.split(" ")[0]
-        lead["campaign"] = "AD.GM&E.027" if cells[5].text == "Campanha 2 - Papel e Celulose" else "AD.GM&E.001"
+        lead["campaign"] = "AD.GM&E.027" if cells[5].text == "Campanha 2 - Papel e Celulose" else "AD.GM&E.001" if cells[5].text == "P001 | CADENCIA AD001 | 4 MENSAGENS" else cells[5].text
 
         print(f'nome: {lead["name"]} | empresa: {lead["company"]} | campanha: {lead["campaign"]} | perfil: {lead["linkedin"]} | inicio: {lead["data_invite"]}')
 
         leads.append(lead)
-        return leads
 
-        break
-        fechar = input("Fechar programa? ")
-        print(len(leads))
-        if fechar == 's':
-            return leads
-            driver.quit()
 
 def update_leads(driver, wait):
     driver.get("https://app.catacliente.com.br/index#contatos?t=2")
