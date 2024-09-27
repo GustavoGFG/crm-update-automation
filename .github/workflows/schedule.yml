@@ -1,37 +1,38 @@
-name: Run Python Script Daily
+# name: Run Python Script Daily
 
+<<<<<<< HEAD
 on:
   schedule:
     # Roda o script todo dia a cada 5 minutos
     - cron: "*/4 * * * *"
 
-jobs:
-  run_script:
-    runs-on: windows-latest # Necessário para rodar xlwings com suporte ao Excel
+ jobs:
+   run_script:
+     runs-on: windows-latest # Necessário para rodar xlwings com suporte ao Excel
 
-    steps:
-      - name: Check out the repository
-        uses: actions/checkout@v2
+     steps:
+       - name: Check out the repository
+         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: "3.x"
+       - name: Set up Python
+         uses: actions/setup-python@v2
+         with:
+           python-version: "3.x"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+       - name: Install dependencies
+         run: |
+           python -m pip install --upgrade pip
+           pip install -r requirements.txt
 
-      - name: Add environment variables
-        env:
-          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-          AZURE_FILE_ID: ${{ secrets.AZURE_FILE_ID }}
-          AZURE_FILE_PATH: ${{ secrets.AZURE_FILE_PATH }}
-          AZURE_SITE_URL: ${{ secrets.AZURE_SITE_URL }}
-          EXCEL_FILE_PASSWORD: ${{ secrets.EXCEL_FILE_PASSWORD }}
-          CATACLIENTE_EMAIL: ${{ secrets.CATACLIENTE_EMAIL }}
-          CATACLIENTE_PASSWORD: ${{ secrets.CATACLIENTE_PASSWORD }}
-        run: python main.py
+       - name: Add environment variables
+         env:
+           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+           AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+           AZURE_FILE_ID: ${{ secrets.AZURE_FILE_ID }}
+           AZURE_FILE_PATH: ${{ secrets.AZURE_FILE_PATH }}
+           AZURE_SITE_URL: ${{ secrets.AZURE_SITE_URL }}
+           EXCEL_FILE_PASSWORD: ${{ secrets.EXCEL_FILE_PASSWORD }}
+           CATACLIENTE_EMAIL: ${{ secrets.CATACLIENTE_EMAIL }}
+           CATACLIENTE_PASSWORD: ${{ secrets.CATACLIENTE_PASSWORD }}
+         run: python main.py
