@@ -1,13 +1,19 @@
-from web_scraper import get_invited_leads
+from web_scraper import login_catacliente, close_modal, get_invited_leads, update_leads
 from excel_handler import add_leads_excel
 from sharepoint import get_site_id, list_files_in_folder, download_file, upload_file, add_rows_to_excel_table, get_drive_id
 from config import file_path
 
 if __name__ == "__main__":
-    leads = get_invited_leads()
-    
+
+    [driver, wait] = login_catacliente()
+    close_modal(driver, wait)
+    leads = []
+    leads = get_invited_leads(driver, wait, leads)
+
+    # [driver, wait] = login_catacliente()
+    # close_modal(driver, wait)
+    leads = update_leads(driver, wait, leads)
     site_id = get_site_id()
-    
     drive_id = get_drive_id(site_id)
     
     if site_id:

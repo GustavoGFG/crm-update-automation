@@ -38,14 +38,15 @@ def get_site_id():
             'Authorization': f'Bearer {access_token}'
         }
         response = requests.get(site_url, headers=headers)
-        print(json.dumps(response.json(), indent=4))
+        # print(json.dumps(response.json(), indent=4))
 
         if response.status_code == 200:
             site_info = response.json()
-            print(f"Site ID: {site_info['id']}")
+            print('Site id aquired successfully')
+            # print(f"Site ID: {site_info['id']}")
             return site_info['id']
         else:
-            print(f"Erro ao obter o site ID: {response.status_code}, {response.text}")
+            print(f"Error obtaining Site id: {response.status_code}, {response.text}")
             return None
         
 def list_files_in_folder(site_id, file_path):
@@ -65,7 +66,7 @@ def list_files_in_folder(site_id, file_path):
                 if item['name'] == file_path:
                     return item['id']  # Retornar o ID do arquivo .xlsm
         else:
-            print(f"Erro ao listar arquivos: {response.status_code}, {response.text}")
+            print(f"Error in linsting files: {response.status_code}, {response.text}")
             return None
         
 def download_file(file_id, site_id, file_path):
@@ -81,9 +82,9 @@ def download_file(file_id, site_id, file_path):
         if response.status_code == 200:
             with open(file_path, 'wb') as f:
                 f.write(response.content)
-            print("Arquivo baixado com sucesso.")
+            print("File dowloaded successfully.")
         else:
-            print(f"Erro ao baixar arquivo: {response.status_code}, {response.text}")
+            print(f"Error in downloading files: {response.status_code}, {response.text}")
 
 def upload_file(file_id, site_id, file_path):
     access_token = get_access_token()
@@ -118,7 +119,8 @@ def get_drive_id(site_id):
             if drives:
                 # Assuming you want the first drive, but you can modify it to select a specific one
                 drive_id = drives[0]['id']
-                print(f"Drive ID: {drive_id}")
+                # print(f"Drive ID: {drive_id}")
+                print('Drive id obteined successfully')
                 return drive_id
             else:
                 print("No drives found under the site.")

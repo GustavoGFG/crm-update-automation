@@ -2,8 +2,8 @@ name: Run Python Script Daily
 
 on:
   schedule:
-    # Roda o script todo dia a cada 5 minutos
-    - cron: "*/4 * * * *"
+    # Run the script daily at 4 AM UTC (1 AM São Paulo time - 01:00)
+    - cron: "0 4 * * *"
 
 jobs:
   run_script:
