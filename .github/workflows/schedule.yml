@@ -34,4 +34,11 @@ jobs:
           EXCEL_FILE_PASSWORD: ${{ secrets.EXCEL_FILE_PASSWORD }}
           CATACLIENTE_EMAIL: ${{ secrets.CATACLIENTE_EMAIL }}
           CATACLIENTE_PASSWORD: ${{ secrets.CATACLIENTE_PASSWORD }}
-        run: python main.py
+        run: |
+          python main.py > scrapper.log 2>&1
+
+      - name: Upload scrapper.log as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: scrapper-log
+          path: scrapper.log
