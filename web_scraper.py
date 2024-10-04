@@ -13,7 +13,7 @@ import pytz
 from config import catacliente_email, catacliente_password
 
 # Configuração do logger para armazenar logs em um arquivo
-logging.basicConfig(filename='scraper.log', level=logging.INFO,
+logging.basicConfig(filename='scrapper.log', level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
 
