@@ -176,7 +176,7 @@ def get_invited_leads(driver, wait, leads):
                 logging.info(f'{len(leads)} leads convidados coletados.')
                 return leads
                 
-            if yesterday_date_brazil == lead["data_invite"]:
+            if yesterday_date_brazil <= lead["data_invite"]:
                 lead["name"] = cells[1].text
                 lead["company"] = cells[4].text
                 lead["linkedin"] = "https://www.linkedin.com/in/" + cells[2].text
@@ -225,7 +225,8 @@ def update_leads(driver, wait, leads):
                 logging.info(f'{len(leads) - old_len} leads conectados coletados.')
                 return leads
 
-            if yesterday_date_brazil == data_accept:
+            # if yesterday_date_brazil == data_accept:
+            if yesterday_date_brazil <= data_accept:
 
                 lead["name"] = cells[1].text
                 lead["campaign"] = "AD.GM&E.027" if cells[9].text == "Campanha 2 - Papel e Celulose" else "AD.GM&E.001" if cells[9].text == "P001 | CADENCIA AD001 | 4 MENSAGENS" else cells[9].text

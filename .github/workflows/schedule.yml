@@ -3,7 +3,7 @@ name: Run Python Script Daily
 on:
   schedule:
     # Run the script daily at 4 AM UTC (1 AM São Paulo time - 01:00)
-    - cron: "* 4 * * *"
+    - cron: "0 4 * * *"
 
 jobs:
   run_script:
@@ -36,17 +36,6 @@ jobs:
           CATACLIENTE_PASSWORD: ${{ secrets.CATACLIENTE_PASSWORD }}
         run: |
           python main.py > scrapper.log 2>&1
-
-      # Commit the updated scrapper.log file back to the repository
-      # - name: Commit and push updated scrapper.log
-      #   run: |
-      #     git config --global user.name "github-actions[bot]"
-      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
-      #     git add scrapper.log
-      #     git commit -m "Update scrapper.log"
-      #     git push
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Built-in secret
 
       - name: Upload scrapper.log as artifact
         uses: actions/upload-artifact@v3
