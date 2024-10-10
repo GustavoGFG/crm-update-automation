@@ -35,7 +35,7 @@ jobs:
           CATACLIENTE_EMAIL: ${{ secrets.CATACLIENTE_EMAIL }}
           CATACLIENTE_PASSWORD: ${{ secrets.CATACLIENTE_PASSWORD }}
         run: |
-          python main.py > scrapper.log 2>&1
+          python main.py
 
       - name: Upload scrapper.log as artifact
         uses: actions/upload-artifact@v3
